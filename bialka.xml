@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<proteins>
+  <protein>
+    <name>BRCA1</name>
+    <uniprot_id>P38398</uniprot_id>
+    <length>1863</length>
+    <weight>207.72</weight>
+    <structure>
+      <domains>
+        <domain name="RING" start="1" end="109"/>
+        <domain name="BRCT" start="1646" end="1863"/>
+      </domains>
+      <modifications>
+        <mod type="Phosphorylation" position="1423"/>
+        <mod type="Phosphorylation" position="1524"/>
+      </modifications>
+    </structure>
+    <expression>
+      <tissue name="Breast" level="High"/>
+      <tissue name="Ovary" level="High"/>
+      <tissue name="Prostate" level="Medium"/>
+    </expression>
+  </protein>
+  <protein>
+    <name>TP53</name>
+    <uniprot_id>P04637</uniprot_id>
+    <length>393</length>
+    <weight>43.65</weight>
+    <structure>
+      <domains>
+        <domain name="TAD" start="1" end="62"/>
+        <domain name="DBD" start="102" end="292"/>
+      </domains>
+      <modifications>
+        <mod type="Phosphorylation" position="15"/>
+        <mod type="Acetylation" position="382"/>
+      </modifications>
+    </structure>
+    <expression>
+      <tissue name="All" level="Variable"/>
+    </expression>
+  </protein>
+</proteins>
