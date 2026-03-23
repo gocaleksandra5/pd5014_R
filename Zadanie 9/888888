@@ -1,0 +1,65 @@
+library(stringr)
+library(dplyr)
+
+base_url <- "https://raw.githubusercontent.com/gocaleksandra5/pd5014_R/main/"
+
+sekwencje <- read.table(
+  paste0(base_url, "sekwencje.txt"),
+  header = TRUE,
+  stringsAsFactors = FALSE
+)
+
+sekwencje <- sekwencje %>%
+  mutate(
+    # liczba wystąpień ATG
+    ATG_count = str_count(Sekwencja, "ATG"),
+    
+    # zamiana RNA -> DNA (U -> T)
+    Sekwencja_DNA = str_replace_all(Sekwencja, "U", "T"),
+    
+    # pierwsze 10 nukleotydów
+    first10 = str_sub(Sekwencja, 1, 10),
+    
+    # wykrycie motywu GAG
+    has_GAG = str_detect(Sekwencja, "GAG")
+  )
+
+
+komplement <- function(seq, typ) {
+  if (typ == "DNA") {
+    seq <- str_replace_all(seq, "A", "t")
+    seq <- str_replace_all(seq, "T", "a")
+    seq <- str_replace_all(seq, "G", "c")
+    seq <- str_replace_all(seq, "C", "g")
+  } else {
+    seq <- str_replace_all(seq, "A", "u")
+    seq <- str_replace_all(seq, "U", "a")
+    seq <- str_replace_all(seq, "G", "c")
+    seq <- str_replace_all(seq, "C", "g")
+  }
+  return(seq)
+}
+
+
+sekwencje$Sekwencja_rev <- mapply(komplement, sekwencje$Sekwencja, sekwencje$Typ)
+
+podsumowanie <- sekwencje %>%
+  mutate(
+    last5 = str_sub(Sekwencja, -5, -1),
+    GAG_info = ifelse(has_GAG, "PRAWDA", "FAŁSZ")
+  ) %>%
+  select(
+    ID,
+    first10,
+    last5,
+    GAG_info
+  )
+
+  # pełna tabela
+sekwencje
+
+# tabela podsumowująca
+podsumowanie
+
+
+  
