@@ -1,0 +1,17 @@
+Średnia log2FC dla istotnych genów to: 1.567521 
+# A tibble: 5 × 15
+  Gene_ID   Gene_Symbol Gene_Type      Chromosome Strand Length Expression_Level Log2FC P_value Condition   Time_Point Replicate Sample_Quality Batch Adjusted_P_value
+  <chr>     <chr>       <chr>          <chr>      <chr>   <dbl>            <dbl>  <dbl>   <dbl> <chr>       <chr>          <dbl> <chr>          <dbl>            <dbl>
+1 ENSG15524 Gene_K      protein_coding 12         -       85213             58.3   5.34  0.0442 treatment_B 12h                2 medium             4           0.0932
+2 ENSG73396 Gene_G      protein_coding 14         -       96171             45.7   4.70  0.0321 treatment_A 24h                2 high               4           0.0932
+3 ENSG52132 Gene_A      miRNA          4          -       69591             67.2   4.69  0.0287 treatment_A 12h                3 medium             2           0.0927
+4 ENSG57137 Gene_O      lncRNA         X          +       92878             94.0   4.60  0.0133 treatment_B 24h                3 high               4           0.0895
+5 ENSG23194 Gene_B      protein_coding 1          -       30921            138.    4.57  0.0396 control     0h                 1 high               4           0.0932
+# A tibble: 5 × 15
+  Gene_ID   Gene_Symbol Gene_Type      Chromosome Strand Length Expression_Level Log2FC P_value Condition   Time_Point Replicate Sample_Quality Batch Adjusted_P_value
+  <chr>     <chr>       <chr>          <chr>      <chr>   <dbl>            <dbl>  <dbl>   <dbl> <chr>       <chr>          <dbl> <chr>          <dbl>            <dbl>
+1 ENSG73799 Gene_G      lncRNA         20         -       52781            36.6   -5.43  0.0220 treatment_A 24h                3 high               4           0.0895
+2 ENSG20874 Gene_M      miRNA          6          -       10715             5.22  -5.34  0.0496 treatment_A 48h                3 low                3           0.0932
+3 ENSG93439 Gene_L      pseudogene     14         -       22018            38.0   -5.26  0.0239 treatment_A 48h                3 medium             3           0.0895
+4 ENSG22119 Gene_E      protein_coding X          -       12560           115.    -4.95  0.0162 treatment_A 48h                1 high               3           0.0895
+5 ENSG57943 Gene_G      protein_coding 5          -       78355            41.3   -4.95  0.0377 treatment_A 24h                3 high               1           0.0932
