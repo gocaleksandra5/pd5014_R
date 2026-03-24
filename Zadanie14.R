@@ -23,7 +23,7 @@ jpeg("zmiana_ekspresji.jpeg", width = 800, height = 600, quality = 100)
 df <- df %>%
   mutate(
     log10 = -log10(P_value),
-    istotnosc = ifelse(Adjusted_P_value < 0.05, "istotny", "nie_istotna")
+    istotnosc = ifelse(Adjusted_P_value < 0.05, "istotny", "nieistotna")
   )
 
 plot(df$Log2FC, df$log10,
