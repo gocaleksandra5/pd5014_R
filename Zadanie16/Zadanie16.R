@@ -18,9 +18,10 @@ cat("Minimalna wartość:", minE, "\n")
 maxE <- max(df$Expression_Level)
 cat("Maksymalna wartość:", maxE, "\n")
 
-sd(df$Expression_Level)
-cat("Kwantyle:\n")
+sdE <- sd(df$Expression_Level)
+cat("Odchylenie standardowe:", sdE, "\n")
 
+cat("Kwantyle:\n")
 quantile(df$Expression_Level)
 
 
