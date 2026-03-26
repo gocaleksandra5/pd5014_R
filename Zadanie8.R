@@ -13,7 +13,7 @@ sekwencje <- sekwencje %>%
 #Liczba wystąpień ATG
     ATG_count = str_count(Sekwencja, "ATG"),
     
-#Zamiana RNA -> DNA (U -> T)
+#Zamiana RNA na DNA
     Sekwencja_DNA = str_replace_all(Sekwencja, "U", "T"),
     
 #Pierwsze 10 nukleotydów
