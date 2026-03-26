@@ -34,7 +34,7 @@ bio_lista$cechy_morfologiczne <- rbind(
 )
 bio_lista$cechy_morfologiczne
 
-#Homo sapiens informacje
+#Homo sapiens info
 bio_lista$mutacje$Homo_sapiens
 #nowa mutacja
 bio_lista$mutacje$Mus_musculus <- c(bio_lista$mutacje$Mus_musculus, "Lmna")
