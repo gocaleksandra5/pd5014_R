@@ -18,7 +18,7 @@ rownames(df)
 summary(df)
 head(df, 3)
 
-#Średni wiek pacientów 
+#Średni wiek pacjentów 
 sredni_wiek <- mean(df$Wiek)
 sredni_wiek
 #Tylko pacjęci ze statusem dobry i są kobietami
