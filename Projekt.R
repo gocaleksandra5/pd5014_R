@@ -209,4 +209,4 @@ geny_filtered <- filter_genes(geny)
 head(geny_filtered)
 
 #Część nr.9 
-
+To jeszcze dokończę
