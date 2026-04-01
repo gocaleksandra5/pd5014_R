@@ -1,0 +1,56 @@
+---
+title: "Analiza danych RNA-seq"
+author: "Aleksandra Goc"
+date: "`rna_seq_data.csv`"
+output: html_document
+---
+
+## Wstęp
+
+Celem niniejszego raportu jest analiza danych RNA-seq obejmujących geny od A do T. Z uzyskanych danych otrzymano wartości p-value, Log2FC oraz poziom ekspresji.
+
+```{r wczytanie-danych, echo=TRUE, warning=FALSE, message=FALSE}
+library(dplyr)
+library(readr)
+library(ggplot2)
+
+base_url <- "https://raw.githubusercontent.com/gocaleksandra5/pd5014_R/main/"
+df <- read_csv(paste0(base_url, "rna_seq_data.csv"))
+
+head(df)
+
+```
+
+## Podstawowa analiza statystyczna
+
+```{r statystyki, echo=FALSE}
+summary(df)
+
+df %>%
+  group_by(Condition) %>%
+  summarise(
+    srednia = mean(Expression_Level, na.rm = TRUE),
+    mediana = median(Expression_Level, na.rm = TRUE),
+    sd = sd(Expression_Level, na.rm = TRUE)
+  )
+```
+
+## Wizualizacja danych
+
+### Wykres pudełkowy
+
+```{r boxplot, fig.cap="Rysunek 1. Rozkład poziomu ekspresji genów w zależności od warunku", warning=FALSE}
+ggplot(df, aes(x = Condition, y = Expression_Level, fill = Chromosome)) +
+  geom_boxplot() +
+  labs(
+    title = "Poziomy ekspresji genów w różnych warunkach",
+    x = "Warunek",
+    y = "Poziom ekspresji"
+  ) +
+  theme_minimal()  
+  
+```
+
+## Podsumowanie
+
+Przeprowadzona analiza wykazała, że poziomy ekspresji genów różnią się w zależności od warunku eksperymentalnego.
