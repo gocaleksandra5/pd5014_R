@@ -1,0 +1,304 @@
+---
+title: "Projekt końcowy część 9"
+author: "Aleksandra Goc"
+date: "2026-04-01"
+output: pdf_document
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+## Część 1.
+
+Użyłam danych z przedmiotu statystyka z poprzedniego semestru. Dane
+pobrałąm ze strony:<https://www.ncbi.nlm.nih.gov/> kod do wyszukania
+badań :GSE101521 Badanie miało na celu analizę genów w
+grzbietowo-bocznej korze przedczołowej mózgu, które są aktywne podczas
+myśli samobujczych. Kontrole stanowiły osoby bez myśli samobujczych a
+badawczą osoby, które doświadczały myśli samobujczych i depresji.
+
+```{r wczytanie-danych, echo=TRUE, warning=FALSE, message=FALSE}
+base_url <- "https://raw.githubusercontent.com/gocaleksandra5/pd5014_R/main/"
+
+library(readxl)
+library(dplyr)
+
+download.file(
+  paste0(base_url, "CON%20VS%20MDD.xlsx"),
+  destfile = "CON_VS_MDD.xlsx",
+  mode = "wb"
+)
+
+geny <- read_excel("CON_VS_MDD.xlsx")
+```
+
+### Struktura danych
+
+```{r}
+str(geny)
+```
+
+### Wymiary (wiersze, kolumny)
+
+```{r}
+dim(geny)
+```
+
+### Pierwsze 10 wierszy
+
+```{r}
+head(geny, 10)
+```
+
+#### Ostatnie 5 wierszy
+
+```{r}
+tail(geny, 5)
+```
+
+## Część 2.
+
+### Sprawdzenie NA
+
+```{r}
+colSums(is.na(geny))
+```
+
+### Dodanie przykładowych NA (są w pliku, ale nie byłam pewna czy i tak nie trzeba dodać NA w ramach zadania)
+
+```{r}
+geny[1, 1] <- NA
+geny[1, 2] <- NA
+geny[1, 3] <- NA
+```
+
+### Usunięcie NA
+
+```{r}
+geny_BEZ_NA <- na.omit(geny)
+```
+
+### Tabela bez NA
+
+```{r}
+colSums(is.na(geny_BEZ_NA))
+```
+
+### Przekształcenie danych na factor
+
+```{r}
+geny_BEZ_NA$Symbol <- as.factor(geny_BEZ_NA$Symbol)
+```
+
+### Duże litery
+
+```{r}
+colnames(geny_BEZ_NA) <- toupper(colnames(geny_BEZ_NA))
+```
+
+### Sortowanie LOG2FOLDCHANGE
+
+```{r}
+geny_posortowane <- geny_BEZ_NA[order(-geny_BEZ_NA$LOG2FOLDCHANGE), ]
+```
+
+### Tylko warośći większe od \>0,05 czyli statystycznie mające znaczenie
+
+```{r}
+geny_przefiltrowane <- geny_posortowane[geny_posortowane$PVALUE > 0.05, ]
+head(geny_przefiltrowane)
+```
+
+## Część 3
+
+### Sprawdzenie braków
+
+```{r}
+colSums(is.na(geny))
+```
+
+### Zamiana NA na średnią
+
+```{r}
+geny_srednie <- geny
+num_cols <- sapply(geny_srednie, is.numeric)
+geny_srednie[num_cols] <- lapply(geny_srednie[num_cols], function(x) {
+  x[is.na(x)] <- mean(x, na.rm = TRUE)
+  return(x)
+})
+
+head(geny_srednie)
+```
+
+## Część 4
+
+### Filtrowanie
+
+```{r}
+filtered <- geny_srednie %>%
+  filter(padj < 0.05)
+```
+
+### Wybór kolumn
+
+```{r}
+selected <- geny_srednie %>%
+  select(GeneID, log2FoldChange, baseMean)
+```
+
+### Modyfikacja
+
+```{r}
+modified <- geny_srednie %>%
+  mutate(high_expression = baseMean > mean(baseMean))
+```
+
+### Suma
+
+```{r}
+sorted <- geny_srednie %>%
+  arrange(desc(log2FoldChange))
+
+geny_srednie %>%
+  summarise(
+    srednia = mean(log2FoldChange),
+    odchylenie = sd(log2FoldChange),
+    minimum = min(log2FoldChange),
+    maksimum = max(log2FoldChange)
+  )
+```
+
+## Część 5
+
+### Statystyki
+
+```{r}
+summary(geny_srednie)
+
+num_cols <- sapply(geny_srednie, is.numeric)
+
+statystyki <- data.frame(
+  min = sapply(geny_srednie[num_cols], min),
+  max = sapply(geny_srednie[num_cols], max),
+  mean = sapply(geny_srednie[num_cols], mean),
+  median = sapply(geny_srednie[num_cols], median),
+  sd = sapply(geny_srednie[num_cols], sd)
+)
+
+statystyki
+
+```
+
+## Część 6.
+
+### T-student
+
+Żeby porównać dwie grupy, pobrałam kolejną grupę: kontrolę vs. osoby po
+próbach samobójczych. Pierwszy plik zawierał grupy: kontrola vs. osoby z
+depresją. W tych plikach nie było jednak danych odpowiednich do
+przeprowadzenia testu t-Studenta, więc dodałam kolumnę o nazwie „poziom
+ekspresji genów” i wygenerowałam losowe liczby.
+
+```{r}
+library(dplyr)
+
+download.file(
+  paste0(base_url, "CON%20VS%20MDD-S.xlsx"),
+  destfile = "CON_VS_MDD-S.xlsx",
+  mode = "wb"
+)
+
+
+geny.nr.2 <- read_excel("CON_VS_MDD-S.xlsx", na = "NA")
+geny <- geny %>%
+  mutate('Poziom ekspresji genów' = 
+           runif(n()))
+geny.nr.2 <- geny %>%
+  mutate('Poziom ekspresji genów' = 
+           runif(n()))
+
+x <- geny$`Poziom ekspresji genów`
+y <- geny.nr.2$`Poziom ekspresji genów`
+t.test(x, y)
+
+#Ze względu, że liczby są generowane losowo wstawiam przykłądwe moje wyniki, które wyjaśniam: 
+
+#t = 0.32365, df = 43195, p-value = 0.7462
+#alternative hypothesis: true difference in means is not equal to 0
+#95 percent confidence interval:
+#  -0.004545716  0.006343856
+#sample estimates:
+#  mean of x mean of y 
+#0.5016605 0.5007615 
+
+#p-value oznacza że u mnie brak jest istostnej różnicy między grupami
+#różnica średnich jest minimalna 
+#przedział ufności 95% potwierdza brak istotności 
+
+```
+
+## Część 7.
+
+### Wykresy
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+geny_srednie <- geny_srednie %>%
+  mutate(group = ifelse(log2FoldChange > 2, "high", "low"))
+
+posortowane <- geny_srednie %>%
+  arrange(desc(log2FoldChange))
+```
+
+### Histogram
+
+```{r}
+ggplot(geny_srednie, aes(x = log2FoldChange)) +
+  geom_histogram(fill = "pink", bins = 30) +
+  labs(title = "Rozkład log2FoldChange")
+```
+
+### Wykres pudełkowy
+
+```{r}
+ggplot(geny_srednie, aes(x = group, y = log2FoldChange)) +
+  geom_boxplot(fill = "pink") +
+  labs(title = "Porównanie grup")
+```
+
+### Wykres liniowy
+
+```{r}
+ggplot(head(posortowane, 20),
+       aes(x = reorder(Symbol, log2FoldChange),
+           y = log2FoldChange,
+           group = 1)) +
+  geom_line() +
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 90)) +
+  labs(title = "Top 20 genów")
+```
+
+## Część nr.8
+
+### Zrobłam fukcje, która sortuje po istotności 0.05
+
+```{r}
+filter_genes <- function(geny, padj_threshold = 0.05, lfc_threshold = 1) {
+  
+  filtered <- geny[
+    !is.na(geny$padj) &
+      geny$padj < padj_threshold &
+      abs(geny$log2FoldChange) > lfc_threshold,
+  ]
+  filtered <- filtered[order(filtered$padj), ]
+  
+  return(filtered)
+}
+
+geny_filtered <- filter_genes(geny)
+
+head(geny_filtered)
+```
